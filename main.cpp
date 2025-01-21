@@ -9,31 +9,32 @@
 // Blinking rate in milliseconds
 #define BLINKING_RATE     500ms
 
-
-int main()
-{
-    // Initialise the digital pin LED1 as an output
+ // Initialise the digital pin LED1 as an output
 #ifdef LED1
     DigitalOut led(LED1);
 #else
-     printf("Erreur : LED1 n'est pas définie.\n");
+     bool led;
 #endif
 
 #ifdef BUTTON1
-    DigitalIn button(BUTTON1);  
+    InterruptIn button(BUTTON1);
 #else
-     printf("Erreur : BUTTON1 n'est pas définie.\n");
+     bool button;
 #endif
 
+void toggle_led()
+{
+    led = ! led;
+}
+
+int main()
+{
+   
+    button.rise(&toggle_led);
     while (true) {
-        if(button.read()==1){
-            led=1;
-            printf("led on\n");
-        }
-        else{
-            led=0;
-            printf("led off\n");
-        }
         ThisThread::sleep_for(BLINKING_RATE);
     }
 }
+
+
+
