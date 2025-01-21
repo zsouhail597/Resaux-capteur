@@ -16,11 +16,24 @@ int main()
 #ifdef LED1
     DigitalOut led(LED1);
 #else
-    bool led;
+     printf("Erreur : LED1 n'est pas définie.\n");
+#endif
+
+#ifdef BUTTON1
+    DigitalIn button(BUTTON1);  
+#else
+     printf("Erreur : BUTTON1 n'est pas définie.\n");
 #endif
 
     while (true) {
-        led = !led;
+        if(button.read()==1){
+            led=1;
+            printf("led on\n");
+        }
+        else{
+            led=0;
+            printf("led off\n");
+        }
         ThisThread::sleep_for(BLINKING_RATE);
     }
 }
