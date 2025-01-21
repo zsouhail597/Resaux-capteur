@@ -25,27 +25,31 @@ Ticker led_ticker;
 
 void button_pressed()
 {
+    led_ticker.detach();
     led = 1; 
     button_timer.reset(); 
     button_timer.start(); 
+}
+void flip(){
+    led = !led;
 }
 
 
 void button_released()
 {
     button_timer.stop(); 
-    led = 0; 
+    auto duration = duration_cast<milliseconds>(button_timer.elapsed_time());
+    auto blink_interval = std::max(100ms, duration); // limite de clignotement est de 100ms
+    led_ticker.attach(&flip, blink_interval);
     
 }
 
-void flip(){
-    led = !led;
-}
 
 
 int main()
 {
-     led_ticker.attach(&flip, 20ms);
+    button.rise(&button_pressed); 
+    button.fall(&button_released);
 
     while (true) {
         ThisThread::sleep_for(BLINKING_RATE);
