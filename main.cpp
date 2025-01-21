@@ -9,6 +9,7 @@ using namespace std::chrono;
 // Blinking rate in milliseconds
 #define BLINKING_RATE     500ms
 Timer button_timer;
+Ticker led_ticker; 
  // Initialise the digital pin LED1 as an output
 #ifdef LED1
     DigitalOut led(LED1);
@@ -37,18 +38,16 @@ void button_released()
     
 }
 
+void flip(){
+    led = !led;
+}
+
+
 int main()
 {
-    button.rise(&button_pressed);
-    button.fall(&button_released);
+     led_ticker.attach(&flip, 20ms);
 
     while (true) {
-        
-        if (!button.read()) { 
-            printf("Bouton relâché. Durée de l'appui : %lld ms\n", 
-                   duration_cast<milliseconds>(button_timer.elapsed_time()).count());
-            button_timer.reset();   
-        }
         ThisThread::sleep_for(BLINKING_RATE);
     }
 
